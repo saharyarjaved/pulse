@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // ✅ import router
 import { Building, Crown, Plus, Ticket } from "lucide-react";
 import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated } from "convex/react";
@@ -17,6 +18,7 @@ import { Badge } from "./ui/badge";
 
 export default function Header() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const router = useRouter(); // ✅ use router for navigation
 
   const { isLoading } = useStoreUser();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } =
@@ -29,18 +31,16 @@ export default function Header() {
     <>
       <nav className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-xl z-20 border-b">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          
           {/* Logo */}
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center gap-2">
             <Image
-              src="/spott.png"   // ✅ Replaced with your public image
-              alt="Spott Logo"
-              width={120}
-              height={40}
-              className="h-11 w-auto"
+              src="/pulse.png"
+              alt="Pulse logo"
+              width={500}
+              height={500}
+              className="w-full h-11"
               priority
             />
-
             {hasPro && (
               <Badge className="bg-linear-to-r from-pink-500 to-orange-500 gap-1 text-white ml-3">
                 <Crown className="w-3 h-3" />
@@ -49,12 +49,12 @@ export default function Header() {
             )}
           </Link>
 
-          {/* Search - Desktop */}
+          {/* Search & Location - Desktop Only */}
           <div className="hidden md:flex flex-1 justify-center">
             <SearchLocationBar />
           </div>
 
-          {/* Right Buttons */}
+          {/* Right Side Actions */}
           <div className="flex items-center">
             {!hasPro && (
               <Button
@@ -66,11 +66,12 @@ export default function Header() {
               </Button>
             )}
 
-            <Button variant="ghost" size="sm" asChild className="mr-2">
+            <Button variant="ghost" size="sm" asChild className={"mr-2"}>
               <Link href="/explore">Explore</Link>
             </Button>
 
             <Authenticated>
+              {/* Create Event Button */}
               <Button size="sm" asChild className="flex gap-2 mr-4">
                 <Link href="/create-event">
                   <Plus className="w-4 h-4" />
@@ -78,13 +79,10 @@ export default function Header() {
                 </Link>
               </Button>
 
+              {/* User Button with fixed sign-out */}
               <UserButton
-                afterSignOutUrl="/"
-                appearance={{
-                  elements: {
-                    avatarBox: "w-9 h-9",
-                  },
-                }}
+                afterSignOutUrl={window.location.origin} // ✅ fixed: full URL
+                appearance={{ elements: { avatarBox: "w-9 h-9" } }}
               >
                 <UserButton.MenuItems>
                   <UserButton.Link
@@ -110,7 +108,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Search */}
+        {/* Mobile Search & Location - Below Header */}
         <div className="md:hidden border-t px-3 py-3">
           <SearchLocationBar />
         </div>
@@ -122,7 +120,7 @@ export default function Header() {
         )}
       </nav>
 
-      {/* Onboarding */}
+      {/* Onboarding Modal */}
       <OnboardingModal
         isOpen={showOnboarding}
         onClose={handleOnboardingSkip}

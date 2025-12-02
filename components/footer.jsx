@@ -7,7 +7,7 @@ const Footer = () => {
       
       {/* Left side text */}
       <div className="flex items-center gap-6 text-sm text-gray-400">
-        © {new Date().getFullYear()} | By Saharyar Javed
+        © {new Date().getFullYear()} | By Saharyar javed
       </div>
 
       {/* Right side icons */}
