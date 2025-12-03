@@ -2,9 +2,8 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // ✅ import router
-import { Building, Crown, Plus, Ticket } from "lucide-react";
-import { SignInButton, useAuth, UserButton } from "@clerk/nextjs";
+import { Building, Crown, Plus, Sparkles, Ticket } from "lucide-react";
+import { SignInButton, useAuth, UserButton, useUser } from "@clerk/nextjs";
 import { Authenticated, Unauthenticated } from "convex/react";
 import { BarLoader } from "react-spinners";
 import { useStoreUser } from "@/hooks/use-store-user";
@@ -18,7 +17,6 @@ import { Badge } from "./ui/badge";
 
 export default function Header() {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const router = useRouter(); // ✅ use router for navigation
 
   const { isLoading } = useStoreUser();
   const { showOnboarding, handleOnboardingComplete, handleOnboardingSkip } =
@@ -32,15 +30,16 @@ export default function Header() {
       <nav className="fixed top-0 left-0 right-0 bg-background/80 backdrop-blur-xl z-20 border-b">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center">
             <Image
-              src="/pulse.png"
-              alt="Pulse logo"
+              src="/spott.png"
+              alt="Spott logo"
               width={500}
               height={500}
               className="w-full h-11"
               priority
             />
+            {/* <span className="text-purple-500 text-2xl font-bold">spott*</span> */}
             {hasPro && (
               <Badge className="bg-linear-to-r from-pink-500 to-orange-500 gap-1 text-white ml-3">
                 <Crown className="w-3 h-3" />
@@ -56,6 +55,7 @@ export default function Header() {
 
           {/* Right Side Actions */}
           <div className="flex items-center">
+            {/* Show Pro badge or Upgrade button */}
             {!hasPro && (
               <Button
                 variant="ghost"
@@ -79,10 +79,14 @@ export default function Header() {
                 </Link>
               </Button>
 
-              {/* User Button with fixed sign-out */}
+              {/* User Button */}
               <UserButton
-                afterSignOutUrl={window.location.origin} // ✅ fixed: full URL
-                appearance={{ elements: { avatarBox: "w-9 h-9" } }}
+                afterSignOutUrl="/"
+                appearance={{
+                  elements: {
+                    avatarBox: "w-9 h-9",
+                  },
+                }}
               >
                 <UserButton.MenuItems>
                   <UserButton.Link
